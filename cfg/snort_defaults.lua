@@ -22,13 +22,17 @@
 ---------------------------------------------------------------------------
 -- Path to your rules files (this can be a relative path)
 
-RULE_PATH = '../rules'
-BUILTIN_RULE_PATH = '../builtin_rules'
+-- Path to your rules files (this can be a relative path)
+RULE_PATH = '../../rules'
+BUILTIN_RULE_PATH = '../../builtin_rules'
 PLUGIN_RULE_PATH = '../so_rules'
 
 -- If you are using reputation preprocessor set these
-WHITE_LIST_PATH = '../lists'
-BLACK_LIST_PATH = '../lists'
+ALLOW_LIST_PATH = '../../intel'
+BLOCK_LIST_PATH = '../../intel'
+
+-- Path to AppID ODP - Optional
+APPID_PATH = '../../appid'
 
 ---------------------------------------------------------------------------
 -- default networks

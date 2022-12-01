@@ -21,7 +21,7 @@
 
 -- HOME_NET and EXTERNAL_NET must be set now
 -- setup the network addresses you are protecting
-HOME_NET = 'any'
+HOME_NET = [[ 10.0.0.0/8 192.168.0.0/16 172.16.0.0/12 ]]
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
@@ -83,24 +83,31 @@ ftp_client = { }
 ftp_data = { }
 
 -- see file_magic.lua for file id rules
-file_id = { file_rules = file_magic }
+file_id =
+{
+    enable_type = true,
+    enable_signature = true,
+    file_rules = file_magic,
+    file_policy =
+    {
+        { use = { verdict = 'log', enable_file_type = true, enable_file_signature = true } }
+    }
+}
 
 -- the following require additional configuration to be fully effective:
 
 appid =
 {
     -- appid requires this to use appids in rules
-    --app_detector_dir = 'directory to load appid detectors from'
+    app_detector_dir = APPID_PATH
 }
 
---[[
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
-    --blacklist = 'blacklist file name with ip lists'
-    --whitelist = 'whitelist file name with ip lists'
+    blacklist = BLOCK_LIST_PATH .. '/ip-blocklist',
+    whitelist = ALLOW_LIST_PATH .. '/ip-allowlist'
 }
---]]
 
 ---------------------------------------------------------------------------
 -- 3. configure bindings
@@ -165,6 +172,8 @@ classifications = default_classifications
 
 ips =
 {
+    mode = tap,
+
     -- use this to enable decoder and inspector alerts
     --enable_builtin_rules = true,
 
@@ -172,79 +181,12 @@ ips =
     -- note that rules files can include other rules files
     --include = 'snort3-community.rules',
 
-    -- RULE_PATH is typically set in snort_defaults.lua
+    variables = default_variables,
     rules = [[
-
-        include $RULE_PATH/snort3-app-detect.rules
-        include $RULE_PATH/snort3-browser-chrome.rules
-        include $RULE_PATH/snort3-browser-firefox.rules
-        include $RULE_PATH/snort3-browser-ie.rules
-        include $RULE_PATH/snort3-browser-other.rules
-        include $RULE_PATH/snort3-browser-plugins.rules
-        include $RULE_PATH/snort3-browser-webkit.rules
-        include $RULE_PATH/snort3-content-replace.rules
-        include $RULE_PATH/snort3-exploit-kit.rules
-        include $RULE_PATH/snort3-file-executable.rules
-        include $RULE_PATH/snort3-file-flash.rules
-        include $RULE_PATH/snort3-file-identify.rules
-        include $RULE_PATH/snort3-file-image.rules
-        include $RULE_PATH/snort3-file-java.rules
-        include $RULE_PATH/snort3-file-multimedia.rules
-        include $RULE_PATH/snort3-file-office.rules
-        include $RULE_PATH/snort3-file-other.rules
-        include $RULE_PATH/snort3-file-pdf.rules
-        include $RULE_PATH/snort3-indicator-compromise.rules
-        include $RULE_PATH/snort3-indicator-obfuscation.rules
-        include $RULE_PATH/snort3-indicator-scan.rules
-        include $RULE_PATH/snort3-indicator-shellcode.rules
-        include $RULE_PATH/snort3-malware-backdoor.rules
-        include $RULE_PATH/snort3-malware-cnc.rules
-        include $RULE_PATH/snort3-malware-other.rules
-        include $RULE_PATH/snort3-malware-tools.rules
-        include $RULE_PATH/snort3-netbios.rules
-        include $RULE_PATH/snort3-os-linux.rules
-        include $RULE_PATH/snort3-os-mobile.rules
-        include $RULE_PATH/snort3-os-other.rules
-        include $RULE_PATH/snort3-os-solaris.rules
-        include $RULE_PATH/snort3-os-windows.rules
-        include $RULE_PATH/snort3-policy-multimedia.rules
-        include $RULE_PATH/snort3-policy-other.rules
-        include $RULE_PATH/snort3-policy-social.rules
-        include $RULE_PATH/snort3-policy-spam.rules
-        include $RULE_PATH/snort3-protocol-dns.rules
-        include $RULE_PATH/snort3-protocol-finger.rules
-        include $RULE_PATH/snort3-protocol-ftp.rules
-        include $RULE_PATH/snort3-protocol-icmp.rules
-        include $RULE_PATH/snort3-protocol-imap.rules
-        include $RULE_PATH/snort3-protocol-nntp.rules
-        include $RULE_PATH/snort3-protocol-other.rules
-        include $RULE_PATH/snort3-protocol-pop.rules
-        include $RULE_PATH/snort3-protocol-rpc.rules
-        include $RULE_PATH/snort3-protocol-scada.rules
-        include $RULE_PATH/snort3-protocol-services.rules
-        include $RULE_PATH/snort3-protocol-snmp.rules
-        include $RULE_PATH/snort3-protocol-telnet.rules
-        include $RULE_PATH/snort3-protocol-tftp.rules
-        include $RULE_PATH/snort3-protocol-voip.rules
-        include $RULE_PATH/snort3-pua-adware.rules
-        include $RULE_PATH/snort3-pua-other.rules
-        include $RULE_PATH/snort3-pua-p2p.rules
-        include $RULE_PATH/snort3-pua-toolbars.rules
-        include $RULE_PATH/snort3-server-apache.rules
-        include $RULE_PATH/snort3-server-iis.rules
-        include $RULE_PATH/snort3-server-mail.rules
-        include $RULE_PATH/snort3-server-mssql.rules
-        include $RULE_PATH/snort3-server-mysql.rules
-        include $RULE_PATH/snort3-server-oracle.rules
-        include $RULE_PATH/snort3-server-other.rules
-        include $RULE_PATH/snort3-server-samba.rules
-        include $RULE_PATH/snort3-server-webapp.rules
-        include $RULE_PATH/snort3-sql.rules
-        include $RULE_PATH/snort3-x11.rules
-
-    ]],
-
-    variables = default_variables_singletable
+    
+    include $RULE_PATH/snort.rules
+    
+    ]]
 }
 
 rewrite = { }
@@ -304,11 +246,27 @@ rate_filter =
 -- you can enable with defaults from the command line with -A <alert_type>
 -- uncomment below to set non-default configs
 --alert_csv = { }
---alert_fast = { }
+alert_fast = { file = true }
 --alert_full = { }
 --alert_sfsocket = { }
---alert_syslog = { }
+alert_syslog =
+{
+    facility = local7,
+    level = alert,
+    options = pid
+}
 --unified2 = { }
+alert_json =
+{
+    file = true,
+    limit = 100,
+    fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
+}
+appid_listener =
+{
+    json_logging = true,
+    file = "/var/log/snort/appid.json"
+}
 
 -- packet logging
 -- you can enable with defaults from the command line with -L <log_type>
@@ -318,7 +276,16 @@ rate_filter =
 
 -- additional logs
 --packet_capture = { }
---file_log = { }
+file_log =
+{
+    log_pkt_time = true,
+    log_sys_time = false
+}
+data_log =
+{
+    key = 'http_request_header_event',
+    limit = 100
+}
 
 ---------------------------------------------------------------------------
 -- 8. configure tweaks
