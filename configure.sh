@@ -18,3 +18,5 @@ sudo cp ~/rules/etc/snort_defaults.lua etc/snort.lua /usr/local/snort/etc/snort
 cd ~/sources && curl -Lo snort-openappid.tar.gz https://snort.org/downloads/openappid/26425 && tar xf snort-openappid.tar.gz && sudo cp -r odp /usr/local/snort/appid
 cd ~/sources && curl -Lo ip-blocklist https://www.talosintelligence.com/documents/ip-blacklist && sudo cp ip-blocklist /usr/local/snort/intel
 sudo touch /usr/local/snort/intel/ip-allowlist
+ls /usr/local/snort/rules/; ls /usr/local/snort/appid/odp/; ls /usr/local/snort/i
+ntel/
