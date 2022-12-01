@@ -25,7 +25,7 @@ sudo ldconfig
 ## Install Snort3
 cd ~/sources && git clone https://github.com/snort3/snort3.git
 cd ~/sources/snort3 && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH && export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH && export CFLAGS="-O3" && export CXXFLAGS="-O3 -fno-rtti" && ./configure_cmake.sh --prefix=/usr/local/snort --enable-tcmalloc && cd ~/sources/snort3/build && sudo make -j$(nproc) && sudo make -j$(nproc) install && /usr/local/snort/bin/snort -V
-sudo ln -s /usr/local/snort/bin/snort /usr/local/bin/snort
+sudo ln -s /usr/local/snort/bin/snort /usr/bin/snort
 
 ## Install Snort3 Extra
 cd ~/sources && git clone https://github.com/snort3/snort3_extra.git
