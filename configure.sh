@@ -3,10 +3,14 @@
 # Get Oinkcode
 read -p "Enter Oinkcode: " OINKCODE
 
-## Snort Directory Sectup
+# Snort Directory Sectup
 sudo cp -r /usr/local/snort/etc/snort /usr/local/snort/etc/snort.bck
 sudo mkdir -p /usr/local/snort/{builtin_rules,rules,appid,intel}
 sudo mkdir -p /var/log/snort
+
+# Confiure default setup
+sudo cp cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
+sudo cp cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
 
 # Snort Global Rules, Open AppID and IP Reputation
 mkdir -p ~/rules
