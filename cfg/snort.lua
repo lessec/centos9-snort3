@@ -95,7 +95,9 @@ file_id =
     file_rules = file_magic,
     file_policy =
     {
-        { use = { verdict = 'log', enable_file_type = true, enable_file_signature = true } }
+        { use = 
+            { verdict = 'log', enable_file_type = true, enable_file_signature = true }
+        }
     }
 }
 file_policy = { }
@@ -106,13 +108,14 @@ js_norm = default_js_norm
 
 appid =
 {
-    -- appid requires this to use appids in rules
-    app_detector_dir = APPID_PATH,
+    log_stats = true,
+    app_detector_dir = 'ODP'
 }
 
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
+    -- (see also related path vars at the top of snort_defaults.lua)
     blacklist = BLOCK_LIST_PATH .. '/ip-blocklist',
     whitelist = ALLOW_LIST_PATH .. '/ip-allowlist'
 }
@@ -197,11 +200,10 @@ ips =
     --include = 'snort3-community.rules',
 
     variables = default_variables,
+
     rules = [[
-
-    include $RULE_PATH/snort.rules
-
-    ]]
+        include $RULE_PATH/snort.rules
+    ]]   
 }
 
 -- use these to configure additional rule actions
@@ -273,16 +275,16 @@ alert_syslog =
 }
 alert_json =
 {
-    file = true,
-    limit = 100,
-    fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
+    --file = true,
+    --limit = 100,
+    fields = 'timestamp pkt_num proto pkt_gen pkt_len dir src_addr src_port dst_addr dst_port service rule priority class action b64_data'
 }
---unified2 = { }
 appid_listener =
 {
     json_logging = true,
     file = "/var/log/snort/appid.json",
 }
+--unified2 = { }
 
 -- packet logging
 -- you can enable with defaults from the command line with -L <log_type>
@@ -296,11 +298,6 @@ file_log =
 {
     log_pkt_time = true,
     log_sys_time = false
-}
-data_log =
-{
-    key = 'http_request_header_event',
-    limit = 100
 }
 
 ---------------------------------------------------------------------------
