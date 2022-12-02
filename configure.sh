@@ -1,7 +1,7 @@
 # CentOS 9 Stream with Snort3 Configurer
 
 # Get Oinkcode
-pwd = RUNPATH
+ORGNPATH=$(pwd)
 read -p "Enter Oinkcode: " OINKCODE
 
 # Snort Directory Sectup
@@ -22,5 +22,5 @@ sudo touch /usr/local/snort/intel/ip-allowlist
 ls /usr/local/snort/rules/; ls /usr/local/snort/appid/odp/; ls /usr/local/snort/intel/
 
 # Confiure default setup
-sudo cp "$RUNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
-sudo cp "$RUNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
+sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
+sudo cp "$ORGNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
