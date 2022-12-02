@@ -23,16 +23,16 @@
 -- Path to your rules files (this can be a relative path)
 
 -- Path to your rules files (this can be a relative path)
-RULE_PATH = '../../rules'
-BUILTIN_RULE_PATH = '../../builtin_rules'
+RULE_PATH = '/usr/local/snort/rules'
+BUILTIN_RULE_PATH = '/usr/local/snort/builtin_rules'
 PLUGIN_RULE_PATH = '../so_rules'
 
 -- If you are using reputation preprocessor set these
-ALLOW_LIST_PATH = '../../intel'
-BLOCK_LIST_PATH = '../../intel'
+ALLOW_LIST_PATH = '/usr/local/snort/intel'
+BLOCK_LIST_PATH = '/usr/local/snort/intel'
 
 -- Path to AppID ODP - Optional
-APPID_PATH = '../../appid'
+APPID_PATH = '/usr/local/snort/appid'
 
 ---------------------------------------------------------------------------
 -- default networks
