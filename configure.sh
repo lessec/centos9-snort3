@@ -1,16 +1,13 @@
 # CentOS 9 Stream with Snort3 Configurer
 
 # Get Oinkcode
+pwd = RUNPATH
 read -p "Enter Oinkcode: " OINKCODE
 
 # Snort Directory Sectup
 sudo cp -r /usr/local/snort/etc/snort /usr/local/snort/etc/snort.bck
 sudo mkdir -p /usr/local/snort/{builtin_rules,rules,appid,intel}
 sudo mkdir -p /var/log/snort
-
-# Confiure default setup
-sudo cp cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
-sudo cp cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
 
 # Snort Global Rules, Open AppID and IP Reputation
 mkdir -p ~/rules
@@ -23,3 +20,7 @@ cd ~/sources && curl -Lo snort-openappid.tar.gz https://snort.org/downloads/open
 cd ~/sources && curl -Lo ip-blocklist https://www.talosintelligence.com/documents/ip-blacklist && sudo cp ip-blocklist /usr/local/snort/intel
 sudo touch /usr/local/snort/intel/ip-allowlist
 ls /usr/local/snort/rules/; ls /usr/local/snort/appid/odp/; ls /usr/local/snort/intel/
+
+# Confiure default setup
+sudo cp "$RUNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
+sudo cp "$RUNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
