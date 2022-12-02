@@ -87,7 +87,7 @@ ftp_data = { }
 http_inspect = { }
 http2_inspect = { }
 
--- see file_magic.lua for file id rules
+-- see file_magic.rules for file id rules
 file_id =
 {
     enable_type = true,
@@ -98,7 +98,6 @@ file_id =
         { use = { verdict = 'log', enable_file_type = true, enable_file_signature = true } }
     }
 }
-
 file_policy = { }
 
 js_norm = default_js_norm
@@ -114,8 +113,6 @@ appid =
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
-    -- (see also related path vars at the top of snort_defaults.lua)
-
     blacklist = BLOCK_LIST_PATH .. '/ip-blocklist',
     whitelist = ALLOW_LIST_PATH .. '/ip-allowlist'
 }
@@ -191,12 +188,13 @@ classifications = default_classifications
 ips =
 {
     mode = tap,
+
     -- use this to enable decoder and inspector alerts
     --enable_builtin_rules = true,
 
     -- use include for rules files; be sure to set your path
     -- note that rules files can include other rules files
-    -- (see also related path vars at the top of snort_defaults.lua)
+    --include = 'snort3-community.rules',
 
     variables = default_variables,
     rules = [[
@@ -273,13 +271,13 @@ alert_syslog =
     level = alert,
     options = pid
 }
---unified2 = { }
 alert_json =
 {
     file = true,
     limit = 100,
     fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
 }
+--unified2 = { }
 appid_listener =
 {
     json_logging = true,
@@ -298,6 +296,11 @@ file_log =
 {
     log_pkt_time = true,
     log_sys_time = false
+}
+data_log =
+{
+    key = 'http_request_header_event',
+    limit = 100
 }
 
 ---------------------------------------------------------------------------
