@@ -10,7 +10,7 @@ sudo dnf install -y curl git vim flex bison gcc gcc-c++ make cmake automake auto
 cd ~/sources && git clone https://github.com/snort3/libdaq.git
 cd ~/sources/libdaq
 sudo ./bootstrap
-sudo ./configure
+sudo ./configure --disable-netmap-module --disable-divert-module
 sudo make && sudo make install && sudo ldconfig
 cd ~/sources && curl -Lo flatbuffers-22.11.23.tar.gz https://github.com/google/flatbuffers/archive/v22.11.23.tar.gz && tar xf flatbuffers-22.11.23.tar.gz
 mkdir -p ~/sources/fb-build && sudo cmake ~/sources/flatbuffers-22.11.23

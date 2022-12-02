@@ -109,7 +109,7 @@ js_norm = default_js_norm
 appid =
 {
     log_stats = true,
-    app_detector_dir = 'ODP'
+    --app_detector_dir = 'odp'
 }
 
 reputation =
