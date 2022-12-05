@@ -1,0 +1,10 @@
+[Unit]
+Description=PulledPork3 service for updating Snort3 rules
+Wants=pulledpork.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/pulledpork/pulledpork.py -c /usr/local/pulledpork/etc/pulledpork.conf
+
+[Install]
+WantedBy=multi-user.target

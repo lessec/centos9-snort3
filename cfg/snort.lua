@@ -21,13 +21,14 @@
 
 -- HOME_NET and EXTERNAL_NET must be set now
 -- setup the network addresses you are protecting
-HOME_NET = [[ 10.0.0.0/8 192.168.0.0/16 172.16.0.0/12 ]]
+HOME_NET = 'any'
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
 EXTERNAL_NET = 'any'
 
 include 'snort_defaults.lua'
+include 'file_magic.lua'
 
 ---------------------------------------------------------------------------
 -- 2. configure inspection
@@ -51,8 +52,12 @@ stream_file = { }
 
 arp_spoof = { }
 back_orifice = { }
+dnp3 = { }
 dns = { }
+http_inspect = { }
+http2_inspect = { }
 imap = { }
+modbus = { }
 netflow = {}
 normalizer = { }
 pop = { }
@@ -61,13 +66,6 @@ sip = { }
 ssh = { }
 ssl = { }
 telnet = { }
-
-cip = { }
-dnp3 = { }
-iec104 = { }
-mms = { }
-modbus = { }
-s7commplus = { }
 
 dce_smb = { }
 dce_tcp = { }
@@ -84,41 +82,25 @@ ftp_server = default_ftp_server
 ftp_client = { }
 ftp_data = { }
 
-http_inspect = { }
-http2_inspect = { }
-
--- see file_magic.rules for file id rules
-file_id =
-{
-    enable_type = true,
-    enable_signature = true,
-    file_rules = file_magic,
-    file_policy =
-    {
-        { use = 
-            { verdict = 'log', enable_file_type = true, enable_file_signature = true }
-        }
-    }
-}
-file_policy = { }
-
-js_norm = default_js_norm
+-- see file_magic.lua for file id rules
+file_id = { file_rules = file_magic }
 
 -- the following require additional configuration to be fully effective:
 
 appid =
 {
-    log_stats = true,
-    --app_detector_dir = 'odp'
+    -- appid requires this to use appids in rules
+    --app_detector_dir = 'directory to load appid detectors from'
 }
 
+--[[
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
-    -- (see also related path vars at the top of snort_defaults.lua)
-    blacklist = BLOCK_LIST_PATH .. '/ip-blocklist',
-    whitelist = ALLOW_LIST_PATH .. '/ip-allowlist'
+    --blacklist = 'blacklist file name with ip lists'
+    --whitelist = 'whitelist file name with ip lists'
 }
+--]]
 
 ---------------------------------------------------------------------------
 -- 3. configure bindings
@@ -134,19 +116,15 @@ binder =
     { when = { proto = 'tcp', ports = '111', role='server' }, use = { type = 'rpc_decode' } },
     { when = { proto = 'tcp', ports = '502', role='server' }, use = { type = 'modbus' } },
     { when = { proto = 'tcp', ports = '2123 2152 3386', role='server' }, use = { type = 'gtp_inspect' } },
-    { when = { proto = 'tcp', ports = '2404', role='server' }, use = { type = 'iec104' } },
-    { when = { proto = 'udp', ports = '22222', role = 'server' }, use = { type = 'cip' } },
-    { when = { proto = 'tcp', ports = '44818', role = 'server' }, use = { type = 'cip' } },
 
-    { when = { proto = 'tcp', service = 'dcerpc' },  use = { type = 'dce_tcp' } },
-    { when = { proto = 'udp', service = 'dcerpc' },  use = { type = 'dce_udp' } },
+    { when = { proto = 'tcp', service = 'dcerpc' }, use = { type = 'dce_tcp' } },
+    { when = { proto = 'udp', service = 'dcerpc' }, use = { type = 'dce_udp' } },
     { when = { proto = 'udp', service = 'netflow' }, use = { type = 'netflow' } },
 
     { when = { service = 'netbios-ssn' },      use = { type = 'dce_smb' } },
     { when = { service = 'dce_http_server' },  use = { type = 'dce_http_server' } },
     { when = { service = 'dce_http_proxy' },   use = { type = 'dce_http_proxy' } },
 
-    { when = { service = 'cip' },              use = { type = 'cip' } },
     { when = { service = 'dnp3' },             use = { type = 'dnp3' } },
     { when = { service = 'dns' },              use = { type = 'dns' } },
     { when = { service = 'ftp' },              use = { type = 'ftp_server' } },
@@ -155,8 +133,6 @@ binder =
     { when = { service = 'imap' },             use = { type = 'imap' } },
     { when = { service = 'http' },             use = { type = 'http_inspect' } },
     { when = { service = 'http2' },            use = { type = 'http2_inspect' } },
-    { when = { service = 'iec104' },           use = { type = 'iec104' } },
-    { when = { service = 'mms' },              use = { type = 'mms' } },
     { when = { service = 'modbus' },           use = { type = 'modbus' } },
     { when = { service = 'pop3' },             use = { type = 'pop' } },
     { when = { service = 'ssh' },              use = { type = 'ssh' } },
@@ -164,7 +140,6 @@ binder =
     { when = { service = 'smtp' },             use = { type = 'smtp' } },
     { when = { service = 'ssl' },              use = { type = 'ssl' } },
     { when = { service = 'sunrpc' },           use = { type = 'rpc_decode' } },
-    { when = { service = 's7commplus' },       use = { type = 's7commplus' } },
     { when = { service = 'telnet' },           use = { type = 'telnet' } },
 
     { use = { type = 'wizard' } }
@@ -190,8 +165,6 @@ classifications = default_classifications
 
 ips =
 {
-    mode = tap,
-
     -- use this to enable decoder and inspector alerts
     --enable_builtin_rules = true,
 
@@ -199,12 +172,82 @@ ips =
     -- note that rules files can include other rules files
     --include = 'snort3-community.rules',
 
-    variables = default_variables,
-
+    -- RULE_PATH is typically set in snort_defaults.lua
     rules = [[
-        include $RULE_PATH/snort.rules
-    ]]   
+
+        include $RULE_PATH/snort3-app-detect.rules
+        include $RULE_PATH/snort3-browser-chrome.rules
+        include $RULE_PATH/snort3-browser-firefox.rules
+        include $RULE_PATH/snort3-browser-ie.rules
+        include $RULE_PATH/snort3-browser-other.rules
+        include $RULE_PATH/snort3-browser-plugins.rules
+        include $RULE_PATH/snort3-browser-webkit.rules
+        include $RULE_PATH/snort3-content-replace.rules
+        include $RULE_PATH/snort3-exploit-kit.rules
+        include $RULE_PATH/snort3-file-executable.rules
+        include $RULE_PATH/snort3-file-flash.rules
+        include $RULE_PATH/snort3-file-identify.rules
+        include $RULE_PATH/snort3-file-image.rules
+        include $RULE_PATH/snort3-file-java.rules
+        include $RULE_PATH/snort3-file-multimedia.rules
+        include $RULE_PATH/snort3-file-office.rules
+        include $RULE_PATH/snort3-file-other.rules
+        include $RULE_PATH/snort3-file-pdf.rules
+        include $RULE_PATH/snort3-indicator-compromise.rules
+        include $RULE_PATH/snort3-indicator-obfuscation.rules
+        include $RULE_PATH/snort3-indicator-scan.rules
+        include $RULE_PATH/snort3-indicator-shellcode.rules
+        include $RULE_PATH/snort3-malware-backdoor.rules
+        include $RULE_PATH/snort3-malware-cnc.rules
+        include $RULE_PATH/snort3-malware-other.rules
+        include $RULE_PATH/snort3-malware-tools.rules
+        include $RULE_PATH/snort3-netbios.rules
+        include $RULE_PATH/snort3-os-linux.rules
+        include $RULE_PATH/snort3-os-mobile.rules
+        include $RULE_PATH/snort3-os-other.rules
+        include $RULE_PATH/snort3-os-solaris.rules
+        include $RULE_PATH/snort3-os-windows.rules
+        include $RULE_PATH/snort3-policy-multimedia.rules
+        include $RULE_PATH/snort3-policy-other.rules
+        include $RULE_PATH/snort3-policy-social.rules
+        include $RULE_PATH/snort3-policy-spam.rules
+        include $RULE_PATH/snort3-protocol-dns.rules
+        include $RULE_PATH/snort3-protocol-finger.rules
+        include $RULE_PATH/snort3-protocol-ftp.rules
+        include $RULE_PATH/snort3-protocol-icmp.rules
+        include $RULE_PATH/snort3-protocol-imap.rules
+        include $RULE_PATH/snort3-protocol-nntp.rules
+        include $RULE_PATH/snort3-protocol-other.rules
+        include $RULE_PATH/snort3-protocol-pop.rules
+        include $RULE_PATH/snort3-protocol-rpc.rules
+        include $RULE_PATH/snort3-protocol-scada.rules
+        include $RULE_PATH/snort3-protocol-services.rules
+        include $RULE_PATH/snort3-protocol-snmp.rules
+        include $RULE_PATH/snort3-protocol-telnet.rules
+        include $RULE_PATH/snort3-protocol-tftp.rules
+        include $RULE_PATH/snort3-protocol-voip.rules
+        include $RULE_PATH/snort3-pua-adware.rules
+        include $RULE_PATH/snort3-pua-other.rules
+        include $RULE_PATH/snort3-pua-p2p.rules
+        include $RULE_PATH/snort3-pua-toolbars.rules
+        include $RULE_PATH/snort3-server-apache.rules
+        include $RULE_PATH/snort3-server-iis.rules
+        include $RULE_PATH/snort3-server-mail.rules
+        include $RULE_PATH/snort3-server-mssql.rules
+        include $RULE_PATH/snort3-server-mysql.rules
+        include $RULE_PATH/snort3-server-oracle.rules
+        include $RULE_PATH/snort3-server-other.rules
+        include $RULE_PATH/snort3-server-samba.rules
+        include $RULE_PATH/snort3-server-webapp.rules
+        include $RULE_PATH/snort3-sql.rules
+        include $RULE_PATH/snort3-x11.rules
+
+    ]],
+
+    variables = default_variables_singletable
 }
+
+rewrite = { }
 
 -- use these to configure additional rule actions
 -- react = { }
@@ -226,10 +269,7 @@ suppress =
     -- don't want to any of see these
     { gid = 1, sid = 1 },
 
-    -- don't want to see anything for a given host
-    { track = 'by_dst', ip = '1.2.3.4' }
-
-    -- don't want to see these for a given host
+    -- don't want to see these for a given server
     { gid = 1, sid = 2, track = 'by_dst', ip = '1.2.3.4' },
 }
 --]]
@@ -264,26 +304,10 @@ rate_filter =
 -- you can enable with defaults from the command line with -A <alert_type>
 -- uncomment below to set non-default configs
 --alert_csv = { }
-alert_fast = { file = true }
+--alert_fast = { }
 --alert_full = { }
 --alert_sfsocket = { }
-alert_syslog =
-{
-    facility = local7,
-    level = alert,
-    options = pid
-}
-alert_json =
-{
-    --file = true,
-    --limit = 100,
-    fields = 'timestamp pkt_num proto pkt_gen pkt_len dir src_addr src_port dst_addr dst_port service rule priority class action b64_data'
-}
-appid_listener =
-{
-    json_logging = true,
-    file = "/var/log/snort/appid.json",
-}
+--alert_syslog = { }
 --unified2 = { }
 
 -- packet logging
@@ -294,11 +318,7 @@ appid_listener =
 
 -- additional logs
 --packet_capture = { }
-file_log =
-{
-    log_pkt_time = true,
-    log_sys_time = false
-}
+--file_log = { }
 
 ---------------------------------------------------------------------------
 -- 8. configure tweaks
@@ -307,3 +327,4 @@ file_log =
 if ( tweaks ~= nil ) then
     include(tweaks .. '.lua')
 end
+

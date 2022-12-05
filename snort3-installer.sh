@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 # CentOS 9 Stream with Snort3 Installer
 
 ## Ready to run
@@ -23,8 +23,8 @@ sudo ln -s /usr/lib64/pkgconfig/safec-3.3.pc /usr/lib64/pkgconfig/libsafec.pc &&
 cd ~/sources && git clone https://github.com/snort3/snort3.git
 cd ~/sources/snort3 && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH && export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH && export CFLAGS="-O3" && export CXXFLAGS="-O3 -fno-rtti"
 ./configure_cmake.sh --prefix=/usr/local/snort --enable-tcmalloc
-cd ~/sources/snort3/build && sudo make -j$(nproc) && sudo make -j$(nproc) install && /usr/local/snort/bin/snort -V
-sudo ln -s /usr/local/snort/bin/snort /usr/bin/snort
+cd ~/sources/snort3/build && sudo make -j$(/usr/bin/snortnproc) && sudo make -j$(nproc) install
+sudo ln -s /usr/local/snort/bin/snort
 
 ## Install Snort3 Extra
 cd ~/sources && git clone https://github.com/snort3/snort3_extra.git
@@ -33,6 +33,14 @@ cd ~/sources/snort3_extra
 ./configure_cmake.sh --prefix=/usr/local/snort/extra
 cd ~/sources/snort3_extra/build && sudo make -j$(nproc) && sudo make -j$(nproc) install
 
+# Cnfigoure Snort3 Basic
+# sudo cp -r /usr/local/snort/etc/snort /usr/local/snort/etc/snort.default
+sudo cp /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.default
+sudo mkdir -p /usr/local/snort/etc/{builtin_rules,rules,appid,intel,so_rules}
+sudo mkdir -p /var/log/snort
+sudo touch /usr/local/snort/etc/rules/local.rules
+sudo touch /usr/local/snort/etc/intel/ip-allowlist
+
 ## Check Snort3 version
-snort -V
-echo "DONE"
+/usr/local/snort/bin/snort -V
+echo "DONE!"
