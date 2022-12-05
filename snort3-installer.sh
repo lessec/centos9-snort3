@@ -13,9 +13,9 @@ sudo ./bootstrap
 sudo ./configure --disable-netmap-module --disable-divert-module
 sudo make && sudo make install && sudo ldconfig
 cd ~/sources && curl -Lo flatbuffers-22.11.23.tar.gz https://github.com/google/flatbuffers/archive/v22.11.23.tar.gz && tar xf flatbuffers-22.11.23.tar.gz
-mkdir -p ~/sources/fb-build && sudo cmake ~/sources/flatbuffers-22.11.23
+mkdir -p ~/sources/fb-build
 cd ~/sources/fb-build
-sudo make -j$(nproc) && sudo make -j$(nproc) install && sudo ldconfig && flatc --version
+sudo cmake ~/sources/flatbuffers-22.11.23 && sudo make -j$(nproc) && sudo make -j$(nproc) install && sudo ldconfig && flatc --version
 cd ~/sources && curl -Lo cert-forensics-tools-release-el9.rpm https://forensics.cert.org/cert-forensics-tools-release-el9.rpm && sudo rpm -Uvh cert-forensics-tools-release*rpm && sudo dnf --enablerepo=forensics install -y libsafec libsafec-devel
 sudo ln -s /usr/lib64/pkgconfig/safec-3.3.pc /usr/lib64/pkgconfig/libsafec.pc && sudo ln -s /usr/lib64/libtcmalloc.so.4 /lib/ && sudo ln -s /usr/local/lib/libdaq.so.3 /lib/ && sudo ldconfig
 
