@@ -13,18 +13,18 @@ sudo mkdir -p /usr/local/pulledpork/etc
 sudo cp ~/sources/pulledpork3/pulledpork.py /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/lib /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/etc /usr/local/pulledpork
-sudo ln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
+sudo cln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
 pulledpork -V
 
 ## Configure PulledPork3
 sudo mv /usr/local/pulledpork/etc/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf.default
+sudo cp ./cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
+sudo cp ./cfg/pulledpork.service /etc/systemd/system
+sudo cp ./cfg/pulledpork.timer /etc/systemd/system
 sudo touch /usr/local/pulledpork/etc/enablesid.conf
 sudo touch /usr/local/pulledpork/etc/dropsid.conf
 sudo touch /usr/local/pulledpork/etc/disablesid.conf
 sudo touch /usr/local/pulledpork/etc/modifysid.conf
-sudo cp ./cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
-sudo cp ./cfg/pulledpork.service /etc/systemd/system
-sudo cp ./cfg/pulledpork.timer /etc/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable pulledpork.timer
 
