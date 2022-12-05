@@ -25,5 +25,5 @@ sudo ldconfig
 Now, you can run `installer.sh`!
 ```bash
 git clone https://github.com/lessec/centos9-snort3.git
-cd centos9-snort3 && sh installer.sh
+cd centos9-snort3 && sh snort3-installer.sh
 ```

@@ -7,7 +7,7 @@ mkdir -p ~/sources
 
 ## Basic Dependencies
 sudo dnf install -y curl git vim flex bison gcc gcc-c++ make cmake automake autoconf libtool libpcap-devel pcre-devel libdnet-devel hwloc-devel openssl-devel zlib-devel luajit-devel pkgconf libmnl-devel libunwind-devel libnfnetlink-devel libnetfilter_queue-devel xz-devel libuuid-devel hyperscan hyperscan-devel gperftools-devel
-cd ~/sources && git clone https://github.com/snort3/libdaq.git
+git clone https://github.com/snort3/libdaq.git ~/sources/libdaq
 cd ~/sources/libdaq
 sudo ./bootstrap
 sudo ./configure --disable-netmap-module --disable-divert-module
@@ -20,14 +20,14 @@ cd ~/sources && curl -Lo cert-forensics-tools-release-el9.rpm https://forensics.
 sudo ln -s /usr/lib64/pkgconfig/safec-3.3.pc /usr/lib64/pkgconfig/libsafec.pc && sudo ln -s /usr/lib64/libtcmalloc.so.4 /lib/ && sudo ln -s /usr/local/lib/libdaq.so.3 /lib/ && sudo ldconfig
 
 ## Install Snort3
-cd ~/sources && git clone https://github.com/snort3/snort3.git
+git clone https://github.com/snort3/snort3.git ~/sources/snort3
 cd ~/sources/snort3 && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH && export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH && export CFLAGS="-O3" && export CXXFLAGS="-O3 -fno-rtti"
 ./configure_cmake.sh --prefix=/usr/local/snort --enable-tcmalloc
 cd ~/sources/snort3/build && sudo make -j$(/usr/bin/snortnproc) && sudo make -j$(nproc) install
 sudo ln -s /usr/local/snort/bin/snort
 
 ## Install Snort3 Extra
-cd ~/sources && git clone https://github.com/snort3/snort3_extra.git
+git clone https://github.com/snort3/snort3_extra.git ~/sources/snort3_extra
 export PKG_CONFIG_PATH=/usr/local/snort/lib64/pkgconfig:$PKG_CONFIG_PATH 
 cd ~/sources/snort3_extra
 ./configure_cmake.sh --prefix=/usr/local/snort/extra
