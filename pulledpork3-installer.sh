@@ -14,14 +14,14 @@ sudo mkdir -p /usr/local/pulledpork/etc
 sudo cp ~/sources/pulledpork3/pulledpork.py /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/lib /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/etc /usr/local/pulledpork
-sudo cln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
+sudo ln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
 pulledpork -V
 
 ## Configure PulledPork3
 read -p "Enter Oinkcode: " OINKCODE
 sudo mv /usr/local/pulledpork/etc/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf.default
 sudo mv "$ORGNPATH"/cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
-echo "oinkcode = $OINKCODE\n" | sudo tee -a /usr/local/pulledpork/etc/pulledpork.conf >> /dev/null
+echo "oinkcode = $OINKCODE" | sudo tee -a /usr/local/pulledpork/etc/pulledpork.conf >> /dev/null
 sudo cp "$ORGNPATH"/cfg/pulledpork.service /etc/systemd/system
 sudo cp "$ORGNPATH"/cfg/pulledpork.timer /etc/systemd/system
 sudo touch /usr/local/pulledpork/etc/enablesid.conf
