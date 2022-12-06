@@ -25,12 +25,12 @@ sudo cp ~/sources/snort-rules/builtins/*.rules /usr/local/snort/etc/builtin_rule
 sudo cp ~/sources/snort-rules/etc/snort_defaults.lua /usr/local/snort/etc/snort
 sudo cp ~/sources/snort-rules/etc/snort.lua /usr/local/snort/etc/snort
 sudo cp ~/sources/snort-rules/etc/file_magic.lua /usr/local/snort/etc/snort
-sudo cp -r ~/sources/lightspd/* /usr/local/snort/etc/lightspd
-sudo cp -r odp /usr/local/snort/appid
+sudo cp -r ~/sources/snort-rules/lightspd/* /usr/local/snort/etc/lightspd
+sudo cp -r ~/sources/snort-rules/odp /usr/local/snort/etc/appid
 sudo cp ip-blocklist /usr/local/snort/intel
 ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/intel; ls /usr/local/snort/etc/appid/odp
 
 # Confiure default setup
-sudo cp /usr/local/snort/etc/snort/snort_defaults.lua snort_defaults.lua.old
+sudo cp /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.old
 sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
 sudo cp "$ORGNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
