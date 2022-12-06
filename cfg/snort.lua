@@ -21,14 +21,13 @@
 
 -- HOME_NET and EXTERNAL_NET must be set now
 -- setup the network addresses you are protecting
-HOME_NET = [[ 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ]]
+HOME_NET = 'any'
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
 EXTERNAL_NET = 'any'
 
 include 'snort_defaults.lua'
-include 'file_magic.lua'
 
 ---------------------------------------------------------------------------
 -- 2. configure inspection
@@ -52,12 +51,8 @@ stream_file = { }
 
 arp_spoof = { }
 back_orifice = { }
-dnp3 = { }
 dns = { }
-http_inspect = { }
-http2_inspect = { }
 imap = { }
-modbus = { }
 netflow = {}
 normalizer = { }
 pop = { }
@@ -66,6 +61,13 @@ sip = { }
 ssh = { }
 ssl = { }
 telnet = { }
+
+cip = { }
+dnp3 = { }
+iec104 = { }
+mms = { }
+modbus = { }
+s7commplus = { }
 
 dce_smb = { }
 dce_tcp = { }
@@ -82,41 +84,33 @@ ftp_server = default_ftp_server
 ftp_client = { }
 ftp_data = { }
 
--- see file_magic.lua for file id rules
-file_id =
-{
-    enable_type = true,
-    enable_signature = true,
-    file_rules = file_magic,
-    file_policy =
-    {
-        {
-            use =
-                {
-                    verdict = 'log',
-                    enable_file_type = true,
-                    enable_file_signature = true
-                }
-        }
-    }
-}
+http_inspect = { }
+http2_inspect = { }
+
+-- see file_magic.rules for file id rules
 file_id = { rules_file = 'file_magic.rules' }
 file_policy = { }
+
+js_norm = default_js_norm
 
 -- the following require additional configuration to be fully effective:
 
 appid =
 {
     -- appid requires this to use appids in rules
-    app_detector_dir = APPID_PATH
+    --app_detector_dir = 'directory to load appid detectors from'
 }
 
+--[[
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
-    --blacklist = BLACK_LIST_PATH .. '/ip-blocklist',
-    --whitelist = WHITE_LIST_PATH .. '/ip-allowlist'
+    -- (see also related path vars at the top of snort_defaults.lua)
+
+    --blacklist = 'blacklist file name with ip lists'
+    --whitelist = 'whitelist file name with ip lists'
 }
+--]]
 
 ---------------------------------------------------------------------------
 -- 3. configure bindings
@@ -132,15 +126,19 @@ binder =
     { when = { proto = 'tcp', ports = '111', role='server' }, use = { type = 'rpc_decode' } },
     { when = { proto = 'tcp', ports = '502', role='server' }, use = { type = 'modbus' } },
     { when = { proto = 'tcp', ports = '2123 2152 3386', role='server' }, use = { type = 'gtp_inspect' } },
+    { when = { proto = 'tcp', ports = '2404', role='server' }, use = { type = 'iec104' } },
+    { when = { proto = 'udp', ports = '22222', role = 'server' }, use = { type = 'cip' } },
+    { when = { proto = 'tcp', ports = '44818', role = 'server' }, use = { type = 'cip' } },
 
-    { when = { proto = 'tcp', service = 'dcerpc' }, use = { type = 'dce_tcp' } },
-    { when = { proto = 'udp', service = 'dcerpc' }, use = { type = 'dce_udp' } },
+    { when = { proto = 'tcp', service = 'dcerpc' },  use = { type = 'dce_tcp' } },
+    { when = { proto = 'udp', service = 'dcerpc' },  use = { type = 'dce_udp' } },
     { when = { proto = 'udp', service = 'netflow' }, use = { type = 'netflow' } },
 
     { when = { service = 'netbios-ssn' },      use = { type = 'dce_smb' } },
     { when = { service = 'dce_http_server' },  use = { type = 'dce_http_server' } },
     { when = { service = 'dce_http_proxy' },   use = { type = 'dce_http_proxy' } },
 
+    { when = { service = 'cip' },              use = { type = 'cip' } },
     { when = { service = 'dnp3' },             use = { type = 'dnp3' } },
     { when = { service = 'dns' },              use = { type = 'dns' } },
     { when = { service = 'ftp' },              use = { type = 'ftp_server' } },
@@ -149,6 +147,8 @@ binder =
     { when = { service = 'imap' },             use = { type = 'imap' } },
     { when = { service = 'http' },             use = { type = 'http_inspect' } },
     { when = { service = 'http2' },            use = { type = 'http2_inspect' } },
+    { when = { service = 'iec104' },           use = { type = 'iec104' } },
+    { when = { service = 'mms' },              use = { type = 'mms' } },
     { when = { service = 'modbus' },           use = { type = 'modbus' } },
     { when = { service = 'pop3' },             use = { type = 'pop' } },
     { when = { service = 'ssh' },              use = { type = 'ssh' } },
@@ -156,6 +156,7 @@ binder =
     { when = { service = 'smtp' },             use = { type = 'smtp' } },
     { when = { service = 'ssl' },              use = { type = 'ssl' } },
     { when = { service = 'sunrpc' },           use = { type = 'rpc_decode' } },
+    { when = { service = 's7commplus' },       use = { type = 's7commplus' } },
     { when = { service = 'telnet' },           use = { type = 'telnet' } },
 
     { use = { type = 'wizard' } }
@@ -181,15 +182,15 @@ classifications = default_classifications
 
 ips =
 {
-    mode = tap,
-    enable_builtin_rules = true,
-    --include = 'snort3-community.rules',
-    --variables = default_variables_singletable,
-    variables = default_variables,
-    rules = RULE_PATH .. '/snort.rules'
-}
+    -- use this to enable decoder and inspector alerts
+    --enable_builtin_rules = true,
 
-rewrite = { }
+    -- use include for rules files; be sure to set your path
+    -- note that rules files can include other rules files
+    -- (see also related path vars at the top of snort_defaults.lua)
+
+    variables = default_variables
+}
 
 -- use these to configure additional rule actions
 -- react = { }
@@ -211,7 +212,10 @@ suppress =
     -- don't want to any of see these
     { gid = 1, sid = 1 },
 
-    -- don't want to see these for a given server
+    -- don't want to see anything for a given host
+    { track = 'by_dst', ip = '1.2.3.4' }
+
+    -- don't want to see these for a given host
     { gid = 1, sid = 2, track = 'by_dst', ip = '1.2.3.4' },
 }
 --]]
@@ -246,21 +250,10 @@ rate_filter =
 -- you can enable with defaults from the command line with -A <alert_type>
 -- uncomment below to set non-default configs
 --alert_csv = { }
-alert_fast = { file = true }
+--alert_fast = { }
 --alert_full = { }
 --alert_sfsocket = { }
-alert_syslog =
-{
-    facility = local7,
-    level = alert,
-    options = pid
-}
-alert_json =
-{
-    file = true,
-    limit = 100,
-    fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
-}
+--alert_syslog = { }
 --unified2 = { }
 
 -- packet logging
@@ -271,21 +264,8 @@ alert_json =
 
 -- additional logs
 --packet_capture = { }
-file_log =
-{
-    log_pkt_time = true,
-    log_sys_time = false
-}
-data_log =
-{
-    key = 'http_request_header_event',
-    limit = 100
-}
-appid_listener =
-{
-    json_logging = true,
-    file = "/var/log/snort/appid.json"
-}
+--file_log = { }
+
 ---------------------------------------------------------------------------
 -- 8. configure tweaks
 ---------------------------------------------------------------------------
@@ -293,4 +273,3 @@ appid_listener =
 if ( tweaks ~= nil ) then
     include(tweaks .. '.lua')
 end
-
