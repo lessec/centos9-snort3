@@ -19,19 +19,18 @@ sudo cp ~/sources/pulledpork3/pulledpork.py /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/lib /usr/local/pulledpork
 sudo cp -r ~/sources/pulledpork3/etc /usr/local/pulledpork
 sudo ln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
-pulledpork -V
+sudo touch /usr/local/pulledpork/etc/enablesid.conf
+sudo touch /usr/local/pulledpork/etc/dropsid.conf
+sudo touch /usr/local/pulledpork/etc/disablesid.conf
+sudo touch /usr/local/pulledpork/etc/modifysid.conf
+sudo cp "$ORGNPATH"/cfg/pulledpork.service /etc/systemd/system
+sudo cp "$ORGNPATH"/cfg/pulledpork.timer /etc/systemd/system
+sudo systemctl daemon-reload
 
 ## Configure PulledPork3
 sudo mv /usr/local/pulledpork/etc/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf.default
 sudo cp "$ORGNPATH"/cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
 echo "oinkcode = $OINKCODE" | sudo tee -a /usr/local/pulledpork/etc/pulledpork.conf >> /dev/null
-sudo cp "$ORGNPATH"/cfg/pulledpork.service /etc/systemd/system
-sudo cp "$ORGNPATH"/cfg/pulledpork.timer /etc/systemd/system
-sudo touch /usr/local/pulledpork/etc/enablesid.conf
-sudo touch /usr/local/pulledpork/etc/dropsid.conf
-sudo touch /usr/local/pulledpork/etc/disablesid.conf
-sudo touch /usr/local/pulledpork/etc/modifysid.conf
-sudo systemctl daemon-reload
 sudo systemctl enable pulledpork.timer
 
 sudo pulledpork -c /usr/local/pulledpork/etc/pulledpork.conf
