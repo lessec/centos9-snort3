@@ -112,8 +112,8 @@ appid =
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
-    blacklist = '/ip-blocklist',
-    whitelist = '/ip-allowlist'
+    --blacklist = BLACK_LIST_PATH .. '/ip-blocklist',
+    --whitelist = WHITE_LIST_PATH .. '/ip-allowlist'
 }
 
 ---------------------------------------------------------------------------
@@ -184,9 +184,7 @@ ips =
     --include = 'snort3-community.rules',
     --variables = default_variables_singletable,
     variables = default_variables,
-    rules = [[
-        include $RULE_PATH/snort.rules   
-    ]]
+    rules = RULE_PATH .. '/snort.rules'
 }
 
 rewrite = { }
