@@ -69,6 +69,8 @@ sudo mkdir -p /usr/local/snort/etc/{rules,builtin_rules,so_rules,intel,appid,lig
 sudo mkdir -p /var/log/snort
 sudo touch /usr/local/snort/etc/rules/local.ruless
 sudo touch /usr/local/snort/etc/intel/ip-allowlist
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
 
 ## Check Snort3 version
 /usr/local/snort/bin/snort -V
