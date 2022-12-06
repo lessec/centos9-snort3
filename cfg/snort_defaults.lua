@@ -27,10 +27,10 @@ BUILTIN_RULE_PATH = '../builtin_rules'
 PLUGIN_RULE_PATH = '../so_rules'
 
 -- If you are using reputation preprocessor set these
-WHITE_LIST_PATH = '../lists'
-BLACK_LIST_PATH = '../lists'
+WHITE_LIST_PATH = '../intel'
+BLACK_LIST_PATH = '../intel'
 
--- Path to AppID ODP - Optional
+-- Path to AppID ODP
 APPID_PATH = '../appid'
 
 ---------------------------------------------------------------------------
