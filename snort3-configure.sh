@@ -31,5 +31,6 @@ sudo cp ip-blocklist /usr/local/snort/intel
 ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/intel; ls /usr/local/snort/etc/appid/odp
 
 # Confiure default setup
+sudo cp /usr/local/snort/etc/snort/snort_defaults.lua snort_defaults.lua.old
 sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
 sudo cp "$ORGNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua
