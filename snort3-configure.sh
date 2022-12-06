@@ -19,20 +19,19 @@ tar xf snortrules-snapshot-*.tar.gz
 tar xf Talos_LightSPD.tar.gz
 tar xf snort-openappid.tar.gz
 
+sudo mkdir -p /usr/local/snort/etc/snort/old
 sudo cp ~/sources/snort3-community-rules/*.rules /usr/local/snort/etc/rules
 sudo cp ~/sources/snort-rules/rules/*.rules /usr/local/snort/etc/rules
 sudo cp ~/sources/snort-rules/so_rules/*.rules /usr/local/snort/etc/so_rules
 sudo cp ~/sources/snort-rules/builtins/*.rules /usr/local/snort/etc/builtin_rules
-sudo cp ~/sources/snort-rules/etc/snort_defaults.lua /usr/local/snort/etc/snort
-sudo cp ~/sources/snort-rules/etc/snort.lua /usr/local/snort/etc/snort
-sudo cp ~/sources/snort-rules/etc/file_magic.lua /usr/local/snort/etc/snort
+sudo cp ~/sources/snort-rules/etc/snort_defaults.lua /usr/local/snort/etc/snort/old
+sudo cp ~/sources/snort-rules/etc/snort.lua /usr/local/snort/etc/snort/old
+sudo cp ~/sources/snort-rules/etc/file_magic.lua /usr/local/snort/etc/snort/old
 sudo cp -r ~/sources/snort-rules/lightspd/* /usr/local/snort/etc/lightspd
 sudo cp -r ~/sources/snort-rules/odp /usr/local/snort/etc/appid/odp
 sudo cp ip-blocklist /usr/local/snort/etc/intel
 ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/intel; ls /usr/local/snort/etc/appid/odp
 
 # Confiure default setup
-sudo mv /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.old
-sudo mv /usr/local/snort/etc/snort/snort.lua /usr/local/snort/etc/snort/snort.lua.old
 sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
 sudo cp "$ORGNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua

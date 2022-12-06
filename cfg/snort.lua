@@ -100,6 +100,8 @@ file_id =
         }
     }
 }
+file_id = { rules_file = 'file_magic.rules' }
+file_policy = { }
 
 -- the following require additional configuration to be fully effective:
 
