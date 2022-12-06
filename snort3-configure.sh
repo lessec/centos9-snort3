@@ -32,5 +32,6 @@ ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/intel; ls /usr/local/snor
 
 # Confiure default setup
 sudo mv /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.old
+sudo mv /usr/local/snort/etc/snort/snort.lua /usr/local/snort/etc/snort/snort.lua.old
 sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua
 sudo cp "$ORGNPATH"/cfg/snort.lua /usr/local/snort/etc/snort/snort.lua

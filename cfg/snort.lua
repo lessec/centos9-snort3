@@ -28,7 +28,7 @@ HOME_NET = [[ 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ]]
 EXTERNAL_NET = 'any'
 
 include 'snort_defaults.lua'
-include 'file_magic.luFa'
+include 'file_magic.lua'
 
 ---------------------------------------------------------------------------
 -- 2. configure inspection
@@ -182,9 +182,12 @@ ips =
     mode = tap,
     enable_builtin_rules = true,
     --include = 'snort3-community.rules',
-    variables = default_variables_singletable,
+    --variables = default_variables_singletable,
+    variables = default_variables,
     rules = [[
-        include $RULE_PATH/snort.rules
+    
+    include $RULE_PATH/snort.rules
+    
     ]]
 }
 
