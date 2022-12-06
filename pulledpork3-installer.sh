@@ -20,7 +20,7 @@ pulledpork -V
 ## Configure PulledPork3
 read -p "Enter Oinkcode: " OINKCODE
 sudo cp "$ORGNPATH"/cfg/pulledpork3.conf "$ORGNPATH"/cfg/pulledpork.conf
-echo 'oinkcode = "$OINKCODE"\n' >> "$ORGNPATH"/cfg/pulledpork.conf
+sudo echo "oinkcode = $OINKCODE\n" >> "$ORGNPATH"/cfg/pulledpork.conf
 sudo mv /usr/local/pulledpork/etc/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf.default
 sudo mv "$ORGNPATH"/cfg/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf
 sudo cp "$ORGNPATH"/cfg/pulledpork.service /etc/systemd/system
