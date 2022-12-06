@@ -27,6 +27,9 @@ PLUGIN_RULE_PATH = '../so_rules'
 WHITE_LIST_PATH = '../lists'
 BLACK_LIST_PATH = '../lists'
 
+-- Path to AppID ODP
+APPID_PATH = '../appid'
+
 ---------------------------------------------------------------------------
 -- default networks - used in Talos rules
 ---------------------------------------------------------------------------

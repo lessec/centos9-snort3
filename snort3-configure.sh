@@ -29,8 +29,8 @@ sudo cp ~/sources/snort-rules/etc/snort.lua /usr/local/snort/etc/snort/old
 sudo cp ~/sources/snort-rules/etc/file_magic.lua /usr/local/snort/etc/snort/old
 sudo cp -r ~/sources/snort-rules/lightspd/* /usr/local/snort/etc/lightspd
 sudo cp -r ~/sources/snort-rules/odp /usr/local/snort/etc/appid/odp
-sudo cp ip-blocklist /usr/local/snort/etc/intel
-ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/intel; ls /usr/local/snort/etc/appid/odp
+sudo cp ip-blocklist /usr/local/snort/etc/lists
+ls /usr/local/snort/etc/rules; ls /usr/local/snort/etc/lists; ls /usr/local/snort/etc/appid/odp
 
 # Confiure default setup
 sudo cp "$ORGNPATH"/cfg/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua

@@ -67,10 +67,10 @@ sudo make -j$(nproc) install
 ## Cnfigoure Snort3 Basic
 sudo cp /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.default
 sudo cp /usr/local/snort/etc/snort/snort.lua /usr/local/snort/etc/snort/snort.lua.default
-sudo mkdir -p /usr/local/snort/etc/{rules,builtin_rules,so_rules,intel,appid,lightspd}
+sudo mkdir -p /usr/local/snort/etc/{rules,builtin_rules,so_rules,lists,appid,lightspd}
 sudo mkdir -p /var/log/snort
 sudo touch /usr/local/snort/etc/rules/local.rules
-sudo touch /usr/local/snort/etc/intel/ip-allowlist
+sudo touch /usr/local/snort/etc/lists/ip-allowlist
 sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 
