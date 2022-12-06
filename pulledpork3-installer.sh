@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # CentOS 9 Stream with Snort3 Auto update through PulledPork3
+
+# Get Oinkcode
+sudo -Sv
+read -p "Enter Oinkcode: " OINKCODE
 ORGNPATH=$(pwd)
 
 ## Dependencies
@@ -18,9 +22,8 @@ sudo ln -s /usr/local/pulledpork/pulledpork.py /usr/bin/pulledpork
 pulledpork -V
 
 ## Configure PulledPork3
-read -p "Enter Oinkcode: " OINKCODE
 sudo mv /usr/local/pulledpork/etc/pulledpork.conf /usr/local/pulledpork/etc/pulledpork.conf.default
-sudo mv "$ORGNPATH"/cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
+sudo cp "$ORGNPATH"/cfg/pulledpork3.conf /usr/local/pulledpork/etc/pulledpork.conf
 echo "oinkcode = $OINKCODE" | sudo tee -a /usr/local/pulledpork/etc/pulledpork.conf >> /dev/null
 sudo cp "$ORGNPATH"/cfg/pulledpork.service /etc/systemd/system
 sudo cp "$ORGNPATH"/cfg/pulledpork.timer /etc/systemd/system

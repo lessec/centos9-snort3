@@ -185,9 +185,7 @@ ips =
     --variables = default_variables_singletable,
     variables = default_variables,
     rules = [[
-    
-    include $RULE_PATH/snort.rules
-    
+        include $RULE_PATH/snort.rules   
     ]]
 }
 

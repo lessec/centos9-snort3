@@ -2,8 +2,9 @@
 # CentOS 9 Stream with Snort3 Configurer
 
 # Get Oinkcode
-ORGNPATH=$(pwd)
+sudo -Sv
 read -p "Enter Oinkcode: " OINKCODE
+ORGNPATH=$(pwd)
 
 # Snort Global Rules, Open AppID and IP Reputation
 mkdir -p ~/sources/snort-rules

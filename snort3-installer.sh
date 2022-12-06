@@ -2,6 +2,7 @@
 # CentOS 9 Stream with Snort3 Installer
 
 ## Ready to run
+sudo -Sv
 sudo ldconfig
 mkdir -p ~/sources
 
@@ -66,7 +67,7 @@ sudo make -j$(nproc) install
 ## Cnfigoure Snort3 Basic
 sudo cp /usr/local/snort/etc/snort/snort_defaults.lua /usr/local/snort/etc/snort/snort_defaults.lua.default
 sudo cp /usr/local/snort/etc/snort/snort.lua /usr/local/snort/etc/snort/snort.lua.default
-sudo mkdir -p /usr/local/snort/etc/{rules,builtin_rules,so_rules,intel,appid/odp,lightspd}
+sudo mkdir -p /usr/local/snort/etc/{rules,builtin_rules,so_rules,intel,appid,lightspd}
 sudo mkdir -p /var/log/snort
 sudo touch /usr/local/snort/etc/rules/local.ruless
 sudo touch /usr/local/snort/etc/intel/ip-allowlist
