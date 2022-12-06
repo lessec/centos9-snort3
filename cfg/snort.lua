@@ -21,7 +21,7 @@
 
 -- HOME_NET and EXTERNAL_NET must be set now
 -- setup the network addresses you are protecting
-HOME_NET = 'any'
+HOME_NET = [[ 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ]]
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
@@ -98,7 +98,7 @@ js_norm = default_js_norm
 appid =
 {
     -- appid requires this to use appids in rules
-    --app_detector_dir = 'directory to load appid detectors from'
+    app_detector_dir = APPID_PATH
 }
 
 --[[
@@ -183,7 +183,7 @@ classifications = default_classifications
 ips =
 {
     -- use this to enable decoder and inspector alerts
-    --enable_builtin_rules = true,
+    enable_builtin_rules = true,
 
     -- use include for rules files; be sure to set your path
     -- note that rules files can include other rules files
@@ -250,10 +250,21 @@ rate_filter =
 -- you can enable with defaults from the command line with -A <alert_type>
 -- uncomment below to set non-default configs
 --alert_csv = { }
---alert_fast = { }
+alert_fast = { file = true }
 --alert_full = { }
 --alert_sfsocket = { }
---alert_syslog = { }
+alert_syslog =
+{
+    facility = local7,
+    level = alert,
+    options = pid
+}
+alert_json =
+{
+    file = true,
+    limit = 100,
+    fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
+}
 --unified2 = { }
 
 -- packet logging
@@ -264,7 +275,21 @@ rate_filter =
 
 -- additional logs
 --packet_capture = { }
---file_log = { }
+file_log =
+{
+    log_pkt_time = true,
+    log_sys_time = false
+}
+data_log =
+{
+    key = 'http_request_header_event',
+    limit = 100
+}
+appid_listener =
+{
+    json_logging = true,
+    file = "/var/log/snort/appid.json",
+}
 
 ---------------------------------------------------------------------------
 -- 8. configure tweaks
