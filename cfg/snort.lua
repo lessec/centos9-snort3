@@ -25,7 +25,7 @@ HOME_NET = [[ 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ]]
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
-EXTERNAL_NET = 'any'
+EXTERNAL_NET = '!$HOME_NET'
 
 include 'snort_defaults.lua'
 
@@ -97,11 +97,15 @@ js_norm = default_js_norm
 
 appid =
 {
-    -- appid requires this to use appids in rules
-    app_detector_dir = APPID_PATH
+    app_detector_dir = APPID_PATH,
+    log_stats = true
+}
+appid_listener =
+{
+    json_logging = true,
+    file = "/var/log/snort/appid.json",
 }
 
---[[
 reputation =
 {
     -- configure one or both of these, then uncomment reputation
@@ -110,7 +114,14 @@ reputation =
     --blacklist = 'blacklist file name with ip lists'
     --whitelist = 'whitelist file name with ip lists'
 }
---]]
+
+search_engine = { search_method = "hyperscan" }
+
+detection =
+{
+    hyperscan_literals = true,
+    pcre_to_regex = true
+}
 
 ---------------------------------------------------------------------------
 -- 3. configure bindings
@@ -170,8 +181,29 @@ binder =
 --latency = { }
 
 -- use these to capture perf data for analysis and tuning
---profiler = { }
---perf_monitor = { }
+profiler = { }
+perf_monitor =
+{
+    modules = { },
+    base = true,
+    cpu = true,
+    flow = true,
+    flow_ip = true,
+    packets = 10000,
+    seconds = 60,
+    flow_ports = 1023,
+    output = console, 
+    format = text,    
+    summary = true,
+    
+    enable_flow_ip_profiling,
+    
+    packets = 10000,
+    flow_tracker_creates,
+    flow_tracker_total_deletes,
+    flow_tracker_reload_deletes,
+    flow_tracker_prunes
+}
 
 ---------------------------------------------------------------------------
 -- 5. configure detection
@@ -182,13 +214,15 @@ classifications = default_classifications
 
 ips =
 {
+    mode = tap,
     -- use this to enable decoder and inspector alerts
     enable_builtin_rules = true,
 
     -- use include for rules files; be sure to set your path
     -- note that rules files can include other rules files
     -- (see also related path vars at the top of snort_defaults.lua)
-
+    include = RULE_PATH .. "/snort.rules",
+    include = RULE_PATH .. "/local.rules",
     variables = default_variables
 }
 
@@ -250,7 +284,12 @@ rate_filter =
 -- you can enable with defaults from the command line with -A <alert_type>
 -- uncomment below to set non-default configs
 --alert_csv = { }
-alert_fast = { file = true }
+alert_fast =
+{
+    file = true,
+    packet = false,
+    limit = 10
+}
 --alert_full = { }
 --alert_sfsocket = { }
 alert_syslog =
@@ -263,7 +302,11 @@ alert_json =
 {
     file = true,
     limit = 100,
-    fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
+    --fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
+    fields = 'seconds action class b64_data dir dst_addr dst_ap dst_port eth_dst eth_len \
+    eth_src eth_type gid icmp_code icmp_id icmp_seq icmp_type iface ip_id ip_len msg mpls \
+    pkt_gen pkt_len pkt_num priority proto rev rule service sid src_addr src_ap src_port \
+    target tcp_ack tcp_flags tcp_len tcp_seq tcp_win tos ttl udp_len vlan timestamp'
 }
 --unified2 = { }
 
@@ -284,11 +327,6 @@ data_log =
 {
     key = 'http_request_header_event',
     limit = 100
-}
-appid_listener =
-{
-    json_logging = true,
-    file = "/var/log/snort/appid.json",
 }
 
 ---------------------------------------------------------------------------
