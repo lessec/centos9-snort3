@@ -12,7 +12,7 @@ sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 sudo cp "$ORGNPATH"/cfg/elasticsearch8.repo /etc/yum.repos.d/elasticsearch.repo
 sudo cp "$ORGNPATH"/cfg/logstash8.repo /etc/yum.repos.d/logstash.repo
 sudo cp "$ORGNPATH"/cfg/kibana8.repo /etc/yum.repos.d/kibana.repo
-sudo dnf --enablerepo=elasticsearch install -y elasticsearch logstash kiban
+sudo dnf --enablerepo=elasticsearch install -y elasticsearch logstash kibana
 
 ## Install Filebeat
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.5.2-x86_64.rpm
