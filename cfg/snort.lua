@@ -111,8 +111,8 @@ reputation =
     -- configure one or both of these, then uncomment reputation
     -- (see also related path vars at the top of snort_defaults.lua)
 
-    --blacklist = 'blacklist file name with ip lists'
-    --whitelist = 'whitelist file name with ip lists'
+    blocklist = BLACK_LIST_PATH .. 'ip-blocklist',
+    allowlist = WHITE_LIST_PATH .. 'ip-allowlist'
 }
 
 search_engine = { search_method = "hyperscan" }
@@ -192,12 +192,12 @@ perf_monitor =
     packets = 10000,
     seconds = 60,
     flow_ports = 1023,
-    output = console, 
-    format = text,    
+    output = console,
+    format = text,
     summary = true,
-    
+
     enable_flow_ip_profiling,
-    
+
     packets = 10000,
     flow_tracker_creates,
     flow_tracker_total_deletes,
