@@ -303,10 +303,10 @@ alert_json =
     file = true,
     limit = 100,
     --fields = 'timestamp iface src_addr src_port dst_addr dst_port proto action msg priority class sid'
-    fields = 'timestamp seconds action class dir dst_addr dst_ap dst_port eth_dst eth_len \
-    eth_src eth_type gid icmp_code icmp_id icmp_seq icmp_type iface ip_id ip_len msg mpls \
-    pkt_gen pkt_len pkt_num priority proto rev rule service sid src_addr src_ap src_port \
-    target tcp_ack tcp_flags tcp_len tcp_seq tcp_win tos ttl udp_len vlan b64_data'
+    fields = 'timestamp seconds iface ip_id ip_len msg mpls dst_addr dst_ap dst_port \
+    eth_dst eth_len eth_src eth_type gid icmp_code icmp_id icmp_seq icmp_type priority \
+    pkt_gen pkt_len pkt_num rev rule service sid src_addr src_ap src_port dir target \
+    tcp_ack tcp_flags tcp_len tcp_seq tcp_win tos ttl udp_len vlan class action b64_data'
 }
 --unified2 = { }
 
