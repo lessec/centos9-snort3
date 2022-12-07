@@ -28,7 +28,7 @@ WHITE_LIST_PATH = '../lists'
 BLACK_LIST_PATH = '../lists'
 
 -- Path to AppID ODP
-APPID_PATH = '../appid'
+APPID_PATH = '/usr/local/snort/etc/appid'
 
 ---------------------------------------------------------------------------
 -- default networks - used in Talos rules
