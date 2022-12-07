@@ -111,8 +111,8 @@ reputation =
     -- configure one or both of these, then uncomment reputation
     -- (see also related path vars at the top of snort_defaults.lua)
 
-    blocklist = BLACK_LIST_PATH .. 'ip-blocklist',
-    allowlist = WHITE_LIST_PATH .. 'ip-allowlist'
+    blocklist = BLACK_LIST_PATH .. '/ip-blocklist',
+    allowlist = WHITE_LIST_PATH .. '/ip-allowlist'
 }
 
 search_engine = { search_method = "hyperscan" }
