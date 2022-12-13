@@ -22,11 +22,17 @@ Add two line in local.conf:
 sudo ldconfig
 ```
 
-Now, you can run `installer.sh`!
+## Start to install Snort3
+Now, you can run installer!
 ```bash
 git clone https://github.com/lessec/centos9-snort3.git
 cd centos9-snort3
 sh snort3-installer.sh
 sh snort3-configure.sh
 sh pulledpork3-installer.sh
+```
+
+## Run Snort
+```bash
+sudo snort -c /usr/local/snort/etc/snort/snort.lua --plugin-path /usr/local/snort/extra -k all -i ens160 -y -l /var/log/snort
 ```
